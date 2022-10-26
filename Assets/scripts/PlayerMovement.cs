@@ -18,8 +18,12 @@ public class PlayerMovement : MonoBehaviour
 
     public Camera mainCamera;
     private float jumpPower = 0;
-    private float maxJumpPower = 1000;
+    private float maxJumpPower = 1200;
     private bool spaceDown = false;
+
+    public LayerMask PlatformLayer;
+
+    public CapsuleCollider2D collider;
 
     private void Awake() {
         body = GetComponent<Rigidbody2D>();
@@ -53,13 +57,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (Input.GetKeyUp(KeyCode.Space)) {
-            if (isGrounded && transform.up.y > 0) {
-                body.velocity = transform.up * jumpSpeed * (jumpPower/maxJumpPower);
+            if (IsGrounded() && transform.up.y > 0) {
+                Debug.Log(new Vector2(transform.up.x, transform.up.y) * jumpSpeed * (jumpPower/maxJumpPower));
+                body.AddForce(new Vector2(transform.up.x, transform.up.y) * jumpSpeed * (jumpPower/maxJumpPower));
             }
             spaceDown = false;
             jumpPower = 0;
         }
             
+    }
+
+    bool IsGrounded() {
+        float extraHeight = 1.2f;
+        RaycastHit2D hit = Physics2D.Raycast(collider.bounds.center, -transform.up, collider.bounds.extents.y + extraHeight, PlatformLayer);
+        Debug.DrawRay(collider.bounds.center, -transform.up * (collider.bounds.extents.y + extraHeight));
+        return hit.collider != null;
     }
 
     void OnCollisionEnter2D(Collision2D col)
