@@ -25,6 +25,9 @@ public class MoveCamera : MonoBehaviour
         relativePos = body.transform.position - mainCamera.transform.position;
 
         if (relativePos.y < -5.0f + 2.0f)
-            mainCamera.transform.position += new Vector3(0, -6.5f, 0);
+            mainCamera.transform.position -= new Vector3(0, 6.5f, 0);
+
+        if (relativePos.y > 5.0f)
+            mainCamera.transform.position += new Vector3(0, 6.5f, 0);
     }
 }

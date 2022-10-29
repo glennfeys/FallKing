@@ -77,7 +77,12 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D col)
      {
         isGrounded = true;
-        if (col.relativeVelocity.y > die_velocity) {
+        Collider2D other = col.collider;
+        float bounce = 0.0f;
+        if (other.sharedMaterial)
+            bounce = other.sharedMaterial.bounciness;
+        
+        if (col.relativeVelocity.y > die_velocity * (1 + bounce)) {
             die();
             Debug.Log(col.relativeVelocity);
         }
@@ -95,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(sleep(2));
         body.transform.position = player_start_pos;
         mainCamera.transform.position = cam_start_pos;
+        body.velocity = new Vector2(0, 0);
      }
 
     IEnumerator sleep(int seconds)
